@@ -33,11 +33,13 @@ For Postman-based developer usage examples, see [API_DOCUMENTATION.md](./API_DOC
 
 ```env
 PORT=4000
-MONGODB_URI=mongodb://127.0.0.1:27017/kaiser_demo
+MONGODB_URI=mongodb+srv://<username>:<password>@starkmedia.0mv8b.mongodb.net/kaiser_demo
 JWT_SECRET=replace-with-a-long-random-secret
 JWT_EXPIRES_IN=7d
-CLIENT_ORIGIN=http://localhost:3000
+CLIENT_ORIGIN=https://kaiser-demo-backend.onrender.com/api
 ```
+
+Keep your real `.env` private. The MongoDB URI in this README is intentionally redacted; use your actual Atlas username and password only in `.env` or in your hosting provider's environment variables.
 
 ## Main Endpoints
 

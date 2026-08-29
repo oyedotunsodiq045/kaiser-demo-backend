@@ -5,6 +5,12 @@ This guide documents the demo medical app API for Postman. It covers member sign
 Base URL:
 
 ```text
+https://kaiser-demo-backend.onrender.com/api
+```
+
+Local development URL:
+
+```text
 http://localhost:4000/api
 ```
 
@@ -26,6 +32,18 @@ npm run seed
 npm run dev
 ```
 
+Environment values for the current Atlas/Render demo setup:
+
+```env
+PORT=4000
+MONGODB_URI=mongodb+srv://<username>:<password>@starkmedia.0mv8b.mongodb.net/kaiser_demo
+JWT_SECRET=replace-with-a-long-random-secret
+JWT_EXPIRES_IN=7d
+CLIENT_ORIGIN=https://kaiser-demo-backend.onrender.com/api
+```
+
+Keep the real MongoDB username, password, and JWT secret in `.env` or Render environment variables only. Do not paste real secrets into documentation or commit them to Git.
+
 The seeded staff login is:
 
 ```text
@@ -39,7 +57,7 @@ Password: Password123!
 2. Click `Import`.
 3. Import `postman/Kaiser-Demo-Backend.postman_collection.json`.
 4. Import `postman/Kaiser-Demo-Backend.postman_environment.json`.
-5. Select the `Kaiser Demo Backend - Local` environment.
+5. Select the `Kaiser Demo Backend - Render` environment.
 6. Run requests in the order shown in the collection.
 
 ## Environment Variables
