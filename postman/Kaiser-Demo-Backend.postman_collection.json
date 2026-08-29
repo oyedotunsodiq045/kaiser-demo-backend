@@ -1,0 +1,644 @@
+{
+  "info": {
+    "_postman_id": "3c5bca13-28d5-4d5d-a3d3-f14f3f86a520",
+    "name": "Kaiser Demo Backend",
+    "description": "Postman collection for the demo medical app backend. Use only with demo data.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Member",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) pm.environment.set('memberToken', json.token);",
+                  "if (json.user && json.user._id) pm.environment.set('memberId', json.user._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ava\",\n  \"lastName\": \"Member\",\n  \"email\": \"ava.member@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"member\",\n  \"memberId\": \"KP-DEMO-1001\",\n  \"phone\": \"555-0100\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Caregiver",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) pm.environment.set('caregiverToken', json.token);",
+                  "if (json.user && json.user._id) pm.environment.set('caregiverId', json.user._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Sam\",\n  \"lastName\": \"Caregiver\",\n  \"email\": \"sam.caregiver@example.com\",\n  \"password\": \"Password123!\",\n  \"accountType\": \"caregiver\",\n  \"relationshipToMember\": \"Parent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Member",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) pm.environment.set('memberToken', json.token);",
+                  "if (json.user && json.user._id) pm.environment.set('memberId', json.user._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ava.member@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) pm.environment.set('staffToken', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"staff.demo@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Schedule Appointment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.appointment && json.appointment._id) pm.environment.set('appointmentId', json.appointment._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"providerName\": \"Dr. Jordan Lee\",\n  \"department\": \"Primary Care\",\n  \"location\": \"Oakland Medical Center\",\n  \"visitType\": \"in_person\",\n  \"reason\": \"Annual wellness visit\",\n  \"startsAt\": \"2026-09-15T16:00:00.000Z\",\n  \"endsAt\": \"2026-09-15T16:30:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "View Appointments",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/appointments?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Complete Pre-Visit Check-In",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symptoms\": \"No new symptoms\",\n  \"medicationsChanged\": false,\n  \"insuranceConfirmed\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments/{{appointmentId}}/check-in?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}", "check-in"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Need to reschedule\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments/{{appointmentId}}/cancel?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments", "{{appointmentId}}", "cancel"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prescriptions",
+      "item": [
+        {
+          "name": "Staff Add Prescription",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.prescription && json.prescription._id) pm.environment.set('prescriptionId', json.prescription._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member\": \"{{memberId}}\",\n  \"medicationName\": \"Atorvastatin\",\n  \"dosage\": \"10 mg\",\n  \"prescribingProvider\": \"Dr. Jordan Lee\",\n  \"instructions\": \"Take one tablet by mouth daily\",\n  \"refillsRemaining\": 3,\n  \"pharmacy\": {\n    \"name\": \"Demo Medical Center Pharmacy\",\n    \"address\": \"100 Health Way\",\n    \"phone\": \"555-0199\"\n  },\n  \"nextEligibleRefillAt\": \"2026-10-01T14:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prescriptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["prescriptions"]
+            }
+          }
+        },
+        {
+          "name": "View Prescriptions and Pickup Details",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prescriptions?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["prescriptions"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Request Refill",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prescriptions/{{prescriptionId}}/refill?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["prescriptions", "{{prescriptionId}}", "refill"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "Staff Add Test Result",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member\": \"{{memberId}}\",\n  \"recordType\": \"test_result\",\n  \"title\": \"Lipid Panel\",\n  \"providerName\": \"Dr. Jordan Lee\",\n  \"observedAt\": \"2026-08-20T15:30:00.000Z\",\n  \"summary\": \"Routine cholesterol screening.\",\n  \"values\": [\n    {\n      \"name\": \"LDL\",\n      \"value\": \"94\",\n      \"unit\": \"mg/dL\",\n      \"referenceRange\": \"0-99\",\n      \"flag\": \"normal\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/records",
+              "host": ["{{baseUrl}}"],
+              "path": ["records"]
+            }
+          }
+        },
+        {
+          "name": "Staff Add Health History",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member\": \"{{memberId}}\",\n  \"recordType\": \"health_history\",\n  \"title\": \"Annual Wellness Summary\",\n  \"observedAt\": \"2026-08-20T15:30:00.000Z\",\n  \"summary\": \"Member completed annual wellness visit.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/records",
+              "host": ["{{baseUrl}}"],
+              "path": ["records"]
+            }
+          }
+        },
+        {
+          "name": "Staff Add Immunization",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member\": \"{{memberId}}\",\n  \"recordType\": \"immunization\",\n  \"title\": \"Influenza Vaccine\",\n  \"observedAt\": \"2026-08-20T15:30:00.000Z\",\n  \"summary\": \"Seasonal influenza vaccine administered.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/records",
+              "host": ["{{baseUrl}}"],
+              "path": ["records"]
+            }
+          }
+        },
+        {
+          "name": "View Unified Records Feed",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/records?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["records"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Connected Care",
+      "item": [
+        {
+          "name": "Link External MyChart Account",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organizationName\": \"Outside Health System\",\n  \"externalPatientId\": \"EXT-12345\",\n  \"provider\": \"mychart\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/records/external-accounts?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["records", "external-accounts"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "View External Accounts",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/records/external-accounts?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["records", "external-accounts"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Digital ID",
+      "item": [
+        {
+          "name": "Get Digital Membership Card",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/digital-id?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["digital-id"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messaging",
+      "item": [
+        {
+          "name": "Email Care Team",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.message && json.message._id) pm.environment.set('messageId', json.message._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientType\": \"care_team\",\n  \"subject\": \"Question about recent test results\",\n  \"body\": \"Can someone explain my lipid panel results?\",\n  \"category\": \"medical_question\",\n  \"priority\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Email Member Services",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.message && json.message._id) pm.environment.set('messageId', json.message._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientType\": \"member_services\",\n  \"subject\": \"Coverage question\",\n  \"body\": \"Can you confirm whether video visits are covered by my plan?\",\n  \"category\": \"coverage\",\n  \"priority\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "View Message Threads",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Reply to Message",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Adding one more detail to my question.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages/{{messageId}}/replies",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "{{messageId}}", "replies"]
+            }
+          }
+        },
+        {
+          "name": "Staff Reply to Message",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Thanks for reaching out. Your care team will review this and follow up.\",\n  \"status\": \"in_review\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages/{{messageId}}/replies",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "{{messageId}}", "replies"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caregiver Access",
+      "item": [
+        {
+          "name": "Link Caregiver to Member",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caregiverId\": \"{{caregiverId}}\",\n  \"memberId\": \"{{memberId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/caregivers/link",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "caregivers", "link"]
+            }
+          }
+        },
+        {
+          "name": "Caregiver View Member Appointments",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{caregiverToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/appointments?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Automations",
+      "item": [
+        {
+          "name": "View Member Automation Tasks",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{memberToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/automations/member?memberId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["automations", "member"],
+              "query": [{ "key": "memberId", "value": "{{memberId}}" }]
+            }
+          }
+        },
+        {
+          "name": "View Staff Work Queue",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.tasks && json.tasks.length && json.tasks[0]._id) pm.environment.set('automationTaskId', json.tasks[0]._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/automations/staff?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["automations", "staff"],
+              "query": [{ "key": "status", "value": "pending" }]
+            }
+          }
+        },
+        {
+          "name": "Update Automation Task",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"note\": \"Handled during demo workflow.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/automations/{{automationTaskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["automations", "{{automationTaskId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
